@@ -1,7 +1,8 @@
+from django.db import models
 from django_fsm import FSMField, transition
 
 
-class OrderFSMMixin:
+class OrderFSMModel(models.Model):
     NEW = 'new'
     ACCEPTED = 'accepted'
     IN_DELIVERY = 'in-delivery'
@@ -18,6 +19,7 @@ class OrderFSMMixin:
     ]
 
     state = FSMField(default=NEW, protected=True, choices=STATES)
+
     @transition(field=state, source=NEW, target=ACCEPTED)
     def accept(self):
         pass
@@ -34,7 +36,13 @@ class OrderFSMMixin:
     def deliver(self):
         pass
 
-    @transition(field=state, source=[NEW, ACCEPTED, IN_DELIVERY, AT_CUSTOMER], target=CANCELED)
+    @transition(field=state, source=[NEW, ACCEPTED, IN_DELIVERY, AT_CUSTOMER],
+                target=CANCELED)
     def cancel(self):
         pass
 
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.state

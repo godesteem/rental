@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from shop.order_fsm import OrderFSMMixin
+from shop.order_fsm import OrderFSMModel
 
 EUR = 'EUR'
 USD = 'USD'
@@ -31,24 +31,32 @@ class Address(models.Model):
         return f'Address {self.pk}'
 
 
-class Order(models.Model, OrderFSMMixin):
+class Order(OrderFSMModel):
     customer = models.ForeignKey(to=get_user_model(), on_delete=models.PROTECT)
-    delivery_address = models.ForeignKey(to=Address, on_delete=models.PROTECT, blank=True, null=True,
-                                         related_name='order_deliveryaddress')
-    payment_address = models.ForeignKey(to=Address, on_delete=models.PROTECT, blank=True, null=True,
+    delivery_address = models.ForeignKey(
+        to=Address,
+        on_delete=models.PROTECT, blank=True,
+        null=True,
+        related_name='order_deliveryaddress'
+    )
+    payment_address = models.ForeignKey(to=Address, on_delete=models.PROTECT,
+                                        blank=True, null=True,
                                         related_name='order_paymentaddress')
     created_at = models.DateTimeField(auto_now_add=True)
     delivered_at = models.DateTimeField(null=True, blank=True)
-    price = models.IntegerField()
-    currency = models.CharField(choices=CURRENCIES, default=EUR, max_length=3)
+    price = models.IntegerField(null=True, blank=True)
+    currency = models.CharField(choices=CURRENCIES, default=EUR, max_length=3,
+                                null=True, blank=True)
 
     def __str__(self):
-        return f'{self.pk}: {self.customer.full_name} ({self.created_at})'
+        return f'{self.pk}: {self.customer.get_full_name} ({self.created_at})'
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(to=Product, on_delete=models.PROTECT)
-    order = models.ForeignKey(to=Order, on_delete=models.PROTECT)
+    product = models.ForeignKey(to=Product, on_delete=models.PROTECT,
+                                related_name='order_items')
+    order = models.ForeignKey(to=Order, on_delete=models.PROTECT,
+                              related_name='order_items')
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):

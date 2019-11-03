@@ -1,0 +1,10 @@
+[run]
+omit =
+    */settings.py
+    */.local/*
+    */migrations/*
+    */tests/*
+    */admin.py
+    manage.py
+[report]
+skip_covered = true

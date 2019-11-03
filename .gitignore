@@ -4,6 +4,9 @@ __pycache__/
 
 local_settings.py
 .env
+.coverage
+htmlcov
+
 
 # visualization by graphviz
 *-graph*
