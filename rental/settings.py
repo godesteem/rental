@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 3rd party
+    'django_fsm',
+    # own apps
     'chore.apps.ChoreConfig',
+    'shop.apps.ShopConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,9 @@
+
+.idea/
+__pycache__/
+
+local_settings.py
+.env
+
+# visualization by graphviz
+*-graph*
