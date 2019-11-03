@@ -1,0 +1,7 @@
+htmlcov
+*-graph*
+
+.flake8
+Dockerfile
+docker-compose.yml
+dev-requirements.txt
