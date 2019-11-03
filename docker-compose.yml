@@ -1,0 +1,31 @@
+version: "2"
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_NAME=rental
+      - POSTGRES_USER=rental
+      - POSTGRES_PASSWORD=rental
+
+  django:
+    build:
+      context: ./.
+    image: rental
+    restart: always
+    volumes:
+      - .:/data/web
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: >
+      python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./.env
+
+volumes:
+  web:
+  postgres:
