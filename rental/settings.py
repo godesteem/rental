@@ -127,6 +127,6 @@ STATIC_URL = '/static/'
 
 
 try:
-    from rental import local_settings
+    from rental.local_settings import *
 except ImportError:
     pass
