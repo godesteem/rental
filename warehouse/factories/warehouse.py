@@ -14,5 +14,7 @@ class WarehouseItemComponentFactory(factory.DjangoModelFactory):
 
 
 class WarehouseComponentFactory(factory.DjangoModelFactory):
+    name = factory.Faker('name')
+
     class Meta:
         model = WarehouseComponent

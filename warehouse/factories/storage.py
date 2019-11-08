@@ -4,6 +4,8 @@ from warehouse.models.storage import StorageUnit, StorageUnitComponent
 
 
 class StorageUnitFactory(factory.DjangoModelFactory):
+    name = factory.Faker('word')
+
     class Meta:
         model = StorageUnit
 
