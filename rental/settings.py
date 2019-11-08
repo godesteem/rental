@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # own apps
     'chore.apps.ChoreConfig',
     'shop.apps.ShopConfig',
+    'warehouse.apps.WarehouseConfig',
 ]
 
 MIDDLEWARE = [
