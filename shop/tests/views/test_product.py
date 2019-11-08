@@ -1,18 +1,26 @@
+from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
 
-from shop.factories.product import ProductFactory
+from shop.factories.product import PublishedProductFactory
 from shop.models import EUR
 
 
-class OrderViewSetTestCase(APITestCase):
+class ProductViewSetTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.product = ProductFactory()
+        cls.product = PublishedProductFactory()
         cls.list_url = reverse('products-list')
         cls.detail_url = reverse('products-detail',
                                  kwargs={'pk': cls.product.id})
+        cls.user = User.objects.create_superuser(
+            username='admin', email='admin@example.com',
+            password='123', is_active=True
+        )
+
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
 
     def test_create(self):
         data = {

@@ -10,3 +10,12 @@ class ProductFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Product
+
+
+class PublishedProductFactory(ProductFactory):
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        instance = super()._create(model_class, *args, **kwargs)
+        instance.publish()
+        instance.save()
+        return instance

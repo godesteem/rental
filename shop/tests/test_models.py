@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from shop.factories.order import AddressFactory, OrderFactory, OrderItemFactory
 from shop.factories.product import ProductFactory
+from shop.models import Product
 from shop.order_fsm import OrderFSMModel
 from utils.test_clients import ModelStrTestCaseMixin
 
@@ -29,3 +30,21 @@ class OrderItemNameTestCase(TestCase, ModelStrTestCaseMixin):
 class OrderFSMModelNameTestCase(TestCase, ModelStrTestCaseMixin):
     obj = OrderFSMModel()
     string = OrderFSMModel.NEW
+
+
+class ProductModelTestCase(TestCase):
+    def setUp(self) -> None:
+        self.product = ProductFactory()
+
+    def test_publish(self):
+        self.product.publish()
+        self.product.save()
+        self.assertEqual(self.product.status, Product.PUBLISHED)
+
+    def test_unpublish(self):
+        self.product.publish()
+        self.product.save()
+        self.assertEqual(self.product.status, Product.PUBLISHED)
+        self.product.unpublish()
+        self.product.save()
+        self.assertEqual(self.product.status, Product.DRAFT)

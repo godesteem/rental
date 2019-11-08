@@ -1,12 +1,13 @@
 import json
 
+from django.contrib.auth.models import User
 from django.urls import reverse
 from parameterized import parameterized
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
 
 from shop.factories.order import OrderFactory, OrderItemFactory, UserFactory
-from shop.factories.product import ProductFactory
+from shop.factories.product import PublishedProductFactory
 from shop.models import EUR
 
 
@@ -27,11 +28,18 @@ class OrderViewSetTestCase(APITestCase):
             'country': 'G',
             'note': 'SOME NOTE',
         }
-        cls.product = ProductFactory(name='Product 2', price=1000,
-                                     currency=EUR)
+        cls.product = PublishedProductFactory(name='Product 2', price=1000,
+                                              currency=EUR)
         cls.order_items_list = [{'product': {
             'name': 'Product 2', 'price': 1000, 'currency': EUR
         }, 'quantity': 1}]
+        cls.user = User.objects.create_superuser(
+            username='admin', email='admin@example.com',
+            password='123', is_active=True
+        )
+
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
 
     def test_list(self):
         response = self.client.get(self.list_url)
@@ -85,7 +93,7 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(
             response['customer'], customer.id)
         self.assertEqual(
-            response['order_items'][0]['id'], self.product.id)
+            response['order_items'][0]['product']['id'], self.product.id)
 
     @parameterized.expand([
         ('delivery_address', 'address_dict', True),

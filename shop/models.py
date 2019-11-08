@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django_fsm import FSMField, transition
 
 from shop.order_fsm import OrderFSMModel
 
@@ -8,10 +9,32 @@ USD = 'USD'
 CURRENCIES = [(EUR, 'Euro'), (USD, 'USD')]
 
 
+class ProductManager(models.Manager):
+    def get_published(self):
+        return super().get_queryset().filter(status=Product.PUBLISHED)
+
+
 class Product(models.Model):
+    DRAFT = 'draft'
+    PUBLISHED = 'published'
+    STATES = (
+        (DRAFT, 'Draft'),
+        (PUBLISHED, 'Published'),
+    )
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     currency = models.CharField(choices=CURRENCIES, default=EUR, max_length=3)
+    status = FSMField(default=DRAFT, protected=True, choices=STATES)
+
+    objects = ProductManager()
+
+    @transition(field=status, source=DRAFT, target=PUBLISHED)
+    def publish(self):
+        pass
+
+    @transition(field=status, source=PUBLISHED, target=DRAFT)
+    def unpublish(self):
+        pass
 
     def __str__(self):
         return self.name
