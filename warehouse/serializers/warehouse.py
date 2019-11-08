@@ -25,7 +25,7 @@ class WarehouseItemComponentSerializer(serializers.ModelSerializer):
 class WarehouseItemSerializer(serializers.ModelSerializer):
     warehouse_components = WarehouseItemComponentSerializer(many=True, read_only=True)
     product = ProductSerializer(read_only=True)
-    warehouse_components_list = serializers.ListField(child=WarehouseItemComponentSerializer(), write_only=True)
+    warehouse_components_list = WarehouseItemComponentSerializer(many=True, write_only=True)
     product_id = serializers.IntegerField(write_only=True)
 
     class Meta:
