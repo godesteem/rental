@@ -17,8 +17,9 @@ from django.contrib import admin
 from django.urls import include, path
 
 from shop.urls import urlpatterns as shop_patterns
+from warehouse.urls import urlpatterns as warehouse_patterns
 
-api_patterns = shop_patterns
+api_patterns = shop_patterns + warehouse_patterns
 
 
 urlpatterns = [

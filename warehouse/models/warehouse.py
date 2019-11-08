@@ -10,7 +10,7 @@ class WarehouseItem(models.Model):
 
 
 class WarehouseItemComponent(models.Model):
-    item = models.ForeignKey(to=WarehouseItem, on_delete=models.PROTECT)
+    item = models.ForeignKey(to=WarehouseItem, on_delete=models.PROTECT, related_name='warehouse_components')
     component = models.ForeignKey(to='warehouse.WarehouseComponent', on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=0)
 

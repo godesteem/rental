@@ -53,29 +53,16 @@ class OrderSerializer(serializers.ModelSerializer):
             order_item, _ = OrderItem.objects.update_or_create(
                 order=instance, defaults=order_item)
 
-    def update_or_create_delivery_address(self, delivery_address,
-                                          instance=None):
-        if delivery_address is None:
+    def update_or_create_address(self, address, address_type, instance=None):
+        if address is None:
             return
 
         if instance is None:
             instance = self.instance
 
-        address, _ = Address.objects.get_or_create(**delivery_address)
-        instance.delivery_address = address
-        instance.save(update_fields=['delivery_address'])
-
-    def update_or_create_payment_address(self, payment_address,
-                                         instance=None):
-        if payment_address is None:
-            return
-
-        if instance is None:
-            instance = self.instance
-
-        address, _ = Address.objects.get_or_create(**payment_address)
-        instance.payment_address = address
-        instance.save(update_fields=['payment_address'])
+        address, _ = Address.objects.get_or_create(**address)
+        setattr(instance, address_type, address)
+        instance.save(update_fields=[address_type])
 
     def create(self, validated_data):
         order_items = validated_data.pop('order_items', None)
@@ -85,8 +72,8 @@ class OrderSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         self.update_or_create_order_items(order_items, instance)
-        self.update_or_create_delivery_address(delivery_address, instance)
-        self.update_or_create_payment_address(payment_address, instance)
+        self.update_or_create_address(delivery_address, 'delivery_address', instance)
+        self.update_or_create_address(payment_address, 'payment_address', instance)
         return instance
 
     def update(self, instance, validated_data):
@@ -95,6 +82,6 @@ class OrderSerializer(serializers.ModelSerializer):
         payment_address = validated_data.pop('payment_address', None)
 
         self.update_or_create_order_items(order_items)
-        self.update_or_create_delivery_address(delivery_address)
-        self.update_or_create_payment_address(payment_address)
+        self.update_or_create_address(delivery_address, 'delivery_address')
+        self.update_or_create_address(payment_address, 'payment_address')
         return super().update(instance, validated_data)
