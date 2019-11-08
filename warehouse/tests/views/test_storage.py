@@ -11,7 +11,8 @@ class StorageUnitTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.storage_unit = StorageUnitFactory()
-        cls.detail_url = reverse('storage-units-detail', kwargs={'pk': cls.storage_unit.pk})
+        cls.detail_url = reverse('storage-units-detail',
+                                 kwargs={'pk': cls.storage_unit.pk})
         cls.list_url = reverse('storage-units-list')
 
     def _test_compare_objects(self, data):

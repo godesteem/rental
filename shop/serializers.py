@@ -72,8 +72,10 @@ class OrderSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         self.update_or_create_order_items(order_items, instance)
-        self.update_or_create_address(delivery_address, 'delivery_address', instance)
-        self.update_or_create_address(payment_address, 'payment_address', instance)
+        self.update_or_create_address(delivery_address, 'delivery_address',
+                                      instance)
+        self.update_or_create_address(payment_address, 'payment_address',
+                                      instance)
         return instance
 
     def update(self, instance, validated_data):

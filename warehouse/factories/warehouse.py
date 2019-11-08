@@ -1,7 +1,9 @@
 import factory
 
 from shop.factories.product import ProductFactory
-from warehouse.models.warehouse import WarehouseItem, WarehouseComponent, WarehouseItemComponent
+from warehouse.models.warehouse import (
+    WarehouseItem, WarehouseComponent, WarehouseItemComponent
+)
 
 
 class WarehouseItemFactory(factory.DjangoModelFactory):
@@ -24,4 +26,3 @@ class WarehouseItemComponentFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = WarehouseItemComponent
-

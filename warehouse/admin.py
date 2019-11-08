@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 from warehouse.models.storage import StorageUnitComponent, StorageUnit
-from warehouse.models.warehouse import WarehouseItemComponent, WarehouseItem, WarehouseComponent
+from warehouse.models.warehouse import (
+    WarehouseItemComponent, WarehouseItem, WarehouseComponent
+)
 
 
 class WarehouseItemComponentInline(admin.TabularInline):

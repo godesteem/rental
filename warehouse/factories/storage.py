@@ -13,4 +13,3 @@ class StorageUnitFactory(factory.DjangoModelFactory):
 class StorageUnitComponentFactory(factory.DjangoModelFactory):
     class Meta:
         model = StorageUnitComponent
-

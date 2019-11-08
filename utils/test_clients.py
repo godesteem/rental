@@ -4,4 +4,3 @@ class ModelStrTestCaseMixin:
 
     def test_str(self):
         self.assertEqual(self.obj.__str__(), self.string)
-
