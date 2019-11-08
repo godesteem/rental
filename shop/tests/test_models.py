@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from shop.factories.order import AddressFactory, OrderFactory, OrderItemFactory
 from shop.factories.product import ProductFactory
+from shop.order_fsm import OrderFSMModel
 
 
 class ModelStrTestCaseMixin:
@@ -30,3 +31,8 @@ class OrderNameTestCase(TestCase, ModelStrTestCaseMixin):
 class OrderItemNameTestCase(TestCase, ModelStrTestCaseMixin):
     obj = OrderItemFactory()
     string = f'{obj.order.id} – {obj.product.name} (x {obj.quantity})'
+
+
+class OrderFSMModelNameTestCase(TestCase, ModelStrTestCaseMixin):
+    obj = OrderFSMModel()
+    string = OrderFSMModel.NEW
