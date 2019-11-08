@@ -1,4 +1,4 @@
 [flake8]
-ignore = DJ01
+ignore = DJ01, W503
 exclude = */migrations/*
 max-complexity = 10
