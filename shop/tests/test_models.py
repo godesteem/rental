@@ -3,14 +3,7 @@ from django.test import TestCase
 from shop.factories.order import AddressFactory, OrderFactory, OrderItemFactory
 from shop.factories.product import ProductFactory
 from shop.order_fsm import OrderFSMModel
-
-
-class ModelStrTestCaseMixin:
-    obj = None
-    string = ''
-
-    def test_str(self):
-        self.assertEqual(self.obj.__str__(), self.string)
+from utils.test_clients import ModelStrTestCaseMixin
 
 
 class ProductNameTestCase(TestCase, ModelStrTestCaseMixin):
