@@ -4,17 +4,10 @@ from django.db import models
 
 
 class RentalPeriodQuerySet(models.QuerySet):
-    pass
-
-
-class RentalPeriodManager(models.Manager):
-    def get_queryset(self):
-        return RentalPeriodQuerySet(self.model, using=self._db)
-
     def get_within(
             self, start_datetime: datetime.datetime,
             end_datetime: datetime.datetime) -> 'RentalPeriodQuerySet':
-        return self.get_queryset().filter(
+        return self.filter(
             models.Q(start_datetime__range=(start_datetime, end_datetime))
             | models.Q(end_datetime__range=(start_datetime, end_datetime))
             | models.Q(
@@ -22,6 +15,11 @@ class RentalPeriodManager(models.Manager):
                 end_datetime__gte=end_datetime
             )
         )
+
+
+class RentalPeriodManager(models.Manager):
+    def get_queryset(self):
+        return RentalPeriodQuerySet(self.model, using=self._db)
 
 
 class RentalPeriod(models.Model):
@@ -37,7 +35,8 @@ class RentalPeriod(models.Model):
             'start_datetime is not before end_datetime'
 
     def save(self, *args, **kwargs):
-        self.validate_dates(self.start_datetime, self.end_datetime)
+        if self.start_datetime and self.end_datetime:
+            self.validate_dates(self.start_datetime, self.end_datetime)
         super().save(*args, **kwargs)
 
     def __str__(self):

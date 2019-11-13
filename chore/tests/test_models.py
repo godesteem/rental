@@ -48,7 +48,7 @@ class RentalPeriodQuerySetTestCase(TestCase, ModelStrTestCaseMixin):
     ])
     def test_get_within(self, start_datetime, end_datetime,
                         expected_result_indexes):
-        qs = RentalPeriod.objects.get_within(start_datetime,
+        qs = RentalPeriod.objects.all().get_within(start_datetime,
                                              end_datetime)
         for index in expected_result_indexes:
             self.assertTrue(

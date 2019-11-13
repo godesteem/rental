@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>RentalPeriod Visualization</title>
+</head>
+<body>
+<script>
+	let periods = JSON.parse('[{% for period in rental_periods %}{"start_datetime": "{{ period.start_datetime }}", "end_datetime": "{{ period.end_datetime }}"}{% if not forloop.last %},{% endif %}{% endfor %}]');
+</script>
+<h1>Visualization for Rental Periods</h1>
+<div id="visualization-root"></div>
+  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/axios@0.2.1/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/react-calendar-timeline@0.26.7/lib/index.js"></script>
+
+<script src="{% static 'js/lib/dist/lib.bundle.js' %}"></script>
+{% include 'chore/rental_periods/lib/index.html' %}
+<script>
+	console.log(timeline)
+</script>
+<script type="text/babel" src="{% static 'js/rental_period_visualization.js' %}"></script>
+</body>
+</html>

@@ -11,5 +11,7 @@ class StorageUnitFactory(factory.DjangoModelFactory):
 
 
 class StorageUnitComponentFactory(factory.DjangoModelFactory):
+    storage_unit = factory.SubFactory(StorageUnitFactory)
+
     class Meta:
         model = StorageUnitComponent

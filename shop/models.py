@@ -70,9 +70,10 @@ class Order(OrderFSMModel):
     price = models.IntegerField(null=True, blank=True)
     currency = models.CharField(choices=CURRENCIES, default=EUR, max_length=3,
                                 null=True, blank=True)
+    rental_period = models.ForeignKey(to='chore.RentalPeriod', on_delete=models.PROTECT, null=True)
 
     def __str__(self):
-        return f'{self.pk}: {self.customer.get_full_name} ({self.created_at})'
+        return f'{self.pk}: {self.customer.first_name} {self.customer.last_name} ({self.created_at})'
 
 
 class OrderItem(models.Model):

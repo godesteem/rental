@@ -6,6 +6,7 @@ from parameterized import parameterized
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
 
+from chore.factories import RentalPeriodFactory
 from shop.factories.order import OrderFactory, OrderItemFactory, UserFactory
 from shop.factories.product import PublishedProductFactory
 from shop.models import EUR
@@ -33,6 +34,10 @@ class OrderViewSetTestCase(APITestCase):
         cls.order_items_list = [{'product': {
             'name': 'Product 2', 'price': 1000, 'currency': EUR
         }, 'quantity': 1}]
+        cls.rental_period_dict = {
+            'start_datetime': '2019-01-01T00:00:00Z',
+            'end_datetime': '2019-01-10T00:00:00Z',
+        }
         cls.user = User.objects.create_superuser(
             username='admin', email='admin@example.com',
             password='123', is_active=True
@@ -74,7 +79,8 @@ class OrderViewSetTestCase(APITestCase):
             'payment_address': payment_address,
             'delivery_address': delivery_address,
             'customer': customer.id,
-            'order_items': self.order_items_list
+            'order_items': self.order_items_list,
+            'rental_period': self.rental_period_dict,
         }
 
         response = self.client.post(
@@ -99,8 +105,9 @@ class OrderViewSetTestCase(APITestCase):
         ('delivery_address', 'address_dict', True),
         ('payment_address', 'address_dict', True),
         ('order_items', 'order_items_list', False),
+        ('rental_period', 'rental_period_dict', True),
     ])
-    def test_update(self, field_name, data_dict_name, is_address):
+    def test_update(self, field_name, data_dict_name, expects_dict):
         data_dict = getattr(self, data_dict_name)
         data = {
             field_name: data_dict,
@@ -112,9 +119,9 @@ class OrderViewSetTestCase(APITestCase):
 
         self.assertTrue(is_success(response.status_code), response.data)
         field = response.data[field_name]
-        if is_address:
-            self.assertEqual(
-                field['first_name'], data_dict['first_name'], response.data)
+        if expects_dict:
+            for elem in data_dict.keys():
+                self.assertEqual(field[elem], data_dict[elem])
         else:
-            self.assertEqual(
-                field[0]['product']['name'], data_dict[0]['product']['name'])
+            for elem in data_dict:
+                self.assertIn(elem, data_dict)

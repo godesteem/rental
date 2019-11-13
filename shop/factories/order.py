@@ -1,12 +1,13 @@
 import factory
 from django.contrib.auth import get_user_model
 
+from chore.factories import RentalPeriodFactory
 from shop.factories.product import ProductFactory
 from shop.models import Address, Order, OrderItem
 
 
 class UserFactory(factory.DjangoModelFactory):
-    username = factory.Faker('name')
+    username = factory.LazyAttribute(lambda x: factory.Faker('email'))
 
     class Meta:
         model = get_user_model()
@@ -21,6 +22,7 @@ class OrderFactory(factory.DjangoModelFactory):
     customer = factory.SubFactory(UserFactory)
     delivery_address = factory.SubFactory(AddressFactory)
     payment_address = factory.SubFactory(AddressFactory)
+    rental_period = factory.SubFactory(RentalPeriodFactory)
 
     class Meta:
         model = Order

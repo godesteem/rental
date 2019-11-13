@@ -18,8 +18,8 @@ class AddressNameTestCase(TestCase, ModelStrTestCaseMixin):
 
 
 class OrderNameTestCase(TestCase, ModelStrTestCaseMixin):
-    obj = OrderFactory()
-    string = f'{obj.pk}: {obj.customer.get_full_name} ({obj.created_at})'
+    obj = OrderFactory(customer__first_name='A', customer__last_name='B')
+    string = f'{obj.pk}: A B ({obj.created_at})'
 
 
 class OrderItemNameTestCase(TestCase, ModelStrTestCaseMixin):
