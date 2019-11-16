@@ -13,7 +13,8 @@ class ViewsTestCase(APITestCase):
 
     @parameterized.expand([
         ('rental-period-visualization-get_data',),
-        ('rental-period-visualization',),
+        ('visualization',),
+        ('management',),
     ])
     def test_get_data(self, url):
         url = reverse(url)
