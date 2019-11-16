@@ -7,6 +7,14 @@ local_settings.py
 .coverage
 htmlcov
 
+# db
+*.sqlite3
+mydatabase
+
+
+# test data
+test*.csv
+test.png
 
 # visualization by graphviz
 *-graph*

@@ -22,7 +22,7 @@ from warehouse.models.warehouse import WarehouseItem, WarehouseItemComponent, Wa
 
 
 @tag('big_dataset')
-@skipIf(False, 'Ok.')
+@skipIf(True, 'Ok.')
 class BigDatasetTestCase(TestCase):
     dataset_len = 1000
     dataset_product_len = 2 * dataset_len
@@ -233,10 +233,10 @@ class ComplexTest(BigDatasetTestCase):
         pass
 
 
-@skipIf(False, 'We really don\'t want this to run too often.')
+@skipIf(True, 'We really don\'t want this to run too often.')
 class GenerateTestDataTest(TestCase):
     def test_generate(self):
-        for i in range(1, 10000, 10):
+        for i in range(1, 500, 10):
             suite = unittest.TestSuite()
             test = ComplexTest
             test.dataset_len = i

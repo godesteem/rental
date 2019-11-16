@@ -29,5 +29,5 @@ urlpatterns = [
     path('api/', include(api_patterns)),
     path('management/', include('chore.urls')),
 ]
-if settings.DEBUG:
+if settings.DEBUG:  # noqa
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
