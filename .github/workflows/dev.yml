@@ -7,6 +7,9 @@ jobs:
       TAG: 0.1.${{ github.sha }}
     steps:
       - uses: actions/checkout@v1
+      - name: set env
+        run: |
+          echo -e "SECRET_KEY=xxx\nDB_NAME=rental\nDB_USER=rental\nDB_PASS=rental" >> .env
       - name: build backend
         run: |
           docker build -t rental:$TAG .
