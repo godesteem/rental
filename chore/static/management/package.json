@@ -1,0 +1,41 @@
+{
+  "name": "management",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@babel/preset-react": "^7.7.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-inlinesvg": "^1.1.7",
+    "react-scripts": "3.2.0",
+    "style-loader": "^1.0.0",
+    "svg-inline-loader": "^0.8.0",
+    "webpack-bundle-tracker": "^0.4.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "webpack build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.10"
+  }
+}
