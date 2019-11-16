@@ -18,4 +18,4 @@ jobs:
           docker-compose up -d
       - name: run tests
         run: |
-          docker run rental:$TAG python manage.py test -v 2
+          docker-compose run rental ./manage.py test -v 2
