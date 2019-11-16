@@ -4,42 +4,112 @@
 <head>
 	<meta charset="UTF-8">
 	<title>RentalPeriod Visualization</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<style>
-		.rented-cell{
-			background-color: #449d44;
+		table{
+			border-collapse: collapse;
+		}
+		tr {
 			border: none;
+		}
+		td {
+			border-left: solid 1px #000000;
+			border-right: solid 1px #000000;
+		}
+		.rented-cell{
+			text-align: center;
+			color: white;
+			-webkit-border-radius: 0.25rem;
+			-moz-border-radius: 0.25rem;
+			border-radius: 0.25rem;
+		}
+		.rental-current{
+			background-color: #ffff4f;
+		}
+		.rental-future{
+			background-color: #449d44;
+		}
+		.rental-past{
+			background-color: #2c2c2c;
+		}
+		.dates-header{
+			-webkit-transform: rotate(-25deg);
+			-moz-transform: rotate(-25deg);
+			-ms-transform: rotate(-25deg);
+			-o-transform: rotate(-25deg);
+			transform: rotate(-25deg);
+			border: none;
+		}
+		thead>tr{
+			height: 3rem;
+			background: #ccc;
+			border-top-left-radius: 0.25rem;
+		}
+		thead{
+
+			border-top-left-radius: 0.25rem;
+		}
+		table{
+
+			border-top-left-radius: 0.25rem;
 		}
 	</style>
 </head>
 <body>
-<h1>Visualization for Rental Periods</h1>
-<div id="visualization-root"></div>
-  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script src="https://unpkg.com/axios@0.2.1/dist/axios.min.js"></script>
+<h1>Visualisation for rental elements</h1>
+<select id="rental-pick">
+  <option value="" selected>Pick a option</option>
+  <option value="?view=products">Products</option>
+  <option value="?view=orders">Orders</option>
+  <option value="?view=rental-periods">Rental Peridos</option>
+</select>
 
+<script>
+    $(function(){
+      // bind change event to select
+      $('#rental-pick').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://unpkg.com/axios@0.2.1/dist/axios.min.js"></script>
+<script type="text/babel">
+
+function Dates({dates}){
+	return dates.map((elem, id) => (
+	  <th key={id} className="dates-header">{`${elem.getDate()}.${elem.getMonth()}.${elem.getFullYear()}`}</th>
+	))
+};
+
+const one_day = 1000 * 60 * 60 * 24.;
+const ten_days = 10 * one_day;
+const e = React.createElement;
+</script>
+
+{% if rental_periods %}
+<h2>Visualization for Rental Periods</h2>
+<div id="visualization-root-rental-periods"></div>
 {{ rental_periods|json_script:"rental-data" }}
 <script type="text/babel">
-const e = React.createElement;
 function Timeline(props) {
   const {data: rentalPeriods} = props;
   // Display a "Like" <button>
   if(!rentalPeriods)
     return null;
-  const one_day = 1000 * 60 * 60 * 24.;
-  const ten_days = 10 * one_day;
   const start_datetime = new Date(new Date(rentalPeriods[0].start_datetime) - ten_days);
   const end_datetime = new Date(new Date(rentalPeriods[rentalPeriods.length - 1].end_datetime) - 1 * -ten_days);
 
+  const today = new Date().valueOf();
   let dates = [];
   for (let i=start_datetime;i <= end_datetime; i = new Date(i -(-one_day))){
     dates.push(i);
-  }
-  function Dates({dates}){
-    return dates.map((elem, id) => (
-	  <th key={id}>{elem.toLocaleString()}</th>
-	))
   }
   return (<table>
 	  <thead>
@@ -49,15 +119,16 @@ function Timeline(props) {
 	  return (
 	    <tbody>
 			<tr key={id}>
-			  {dates.map((dateElem) => {
+			  {dates.map((dateElem, dateID) => {
 				const start = new Date(elem.start_datetime);
-				const end = new Date(elem.end_datetime);
+				const end = new Date(elem.end_datetime)
+				const rentalColor = dateElem.valueOf() > today ? 'future' : end <= today ? 'past' : 'current'
                 if(dateElem.valueOf() === start.valueOf()
 				|| (dateElem.valueOf() >= start.valueOf() && dateElem.valueOf() <= end.valueOf())){
-				  return (<td className="rented-cell">{elem.id}</td>)
+				  return (<td key={`${id}${dateID}`} className={`rented-cell rental-${rentalColor}`} title={dateElem}>{elem.id}</td>)
 				}
 				else{
-				  return (<td>&nbsp;</td>)
+				  return (<td key={`${id}${dateID}`} title={dateElem}>&nbsp;</td>)
 				}
 			  })}
 			</tr>
@@ -71,10 +142,125 @@ function Visualization(props) {
   // Display a "Like" <button>
   return (<div>{rentalPeriods && <Timeline data={rentalPeriods}/>}</div>);
 }
-const domContainer = document.querySelector('#visualization-root');
+const domContainer = document.querySelector('#visualization-root-rental-periods');
 ReactDOM.render(<Visualization/>, domContainer);
 
 </script>
+{% endif %}
+{% if orders %}
+
+<h2>Visualization for Orders</h2>
+<div id="visualization-root-orders"></div>
+{{ orders|json_script:"order-data" }}
+<script type="text/babel">
+function Timeline(props) {
+  const {data: orders} = props;
+  // Display a "Like" <button>
+  if(!orders)
+    return null;
+  const start_datetime = new Date(new Date(orders[0].rental_period.start_datetime) - ten_days);
+  const end_datetime = new Date(new Date(orders[orders.length - 1].rental_period.end_datetime) - 1 * -ten_days);
+
+  const today = new Date().valueOf();
+  let dates = [];
+  for (let i=start_datetime;i <= end_datetime; i = new Date(i -(-one_day))){
+    dates.push(i);
+  }
+  return (<table>
+	  <thead>
+	  	<tr><Dates dates={dates}/></tr>
+	  </thead>
+	{orders && orders.map((elem, id) => {
+	  return (
+	    <tbody>
+			<tr key={id}>
+			  {dates.map((dateElem, dateID) => {
+				const start = new Date(elem.rental_period.start_datetime);
+				const end = new Date(elem.rental_period.end_datetime)
+				const rentalColor = dateElem.valueOf() > today ? 'future' : end <= today ? 'past' : 'current';
+                if(dateElem.valueOf() === start.valueOf()
+				|| (dateElem.valueOf() >= start.valueOf() && dateElem.valueOf() <= end.valueOf())){
+				  return (<td key={`${id}${dateID}`} className={`rented-cell rental-${rentalColor}`} title={dateElem}>{elem.id}</td>)
+				}
+				else{
+				  return (<td key={`${id}${dateID}`} title={dateElem}>&nbsp;</td>)
+				}
+			  })}
+			</tr>
+		</tbody>
+	  )
+	})}
+  </table>);
+}
+function Visualization(props) {
+  const orders = JSON.parse(document.getElementById('order-data').textContent);
+  // Display a "Like" <button>
+  return (<div>{orders && <Timeline data={orders}/>}</div>);
+}
+const domContainer = document.querySelector('#visualization-root-orders');
+ReactDOM.render(<Visualization/>, domContainer);
+</script>
+
+{% endif %}
+{% if products %}
+
+<h2>Visualization for Products</h2>
+<div id="visualization-root-products"></div>
+{{ products|json_script:"product-data" }}
+<script type="text/babel">
+function Timeline(props) {
+  const {data: products} = props;
+  // Display a "Like" <button>
+  if(!products)
+    return null;
+  const start_datetime = new Date(new Date(products[0].start_datetime) - ten_days);
+  const end_datetime = new Date(new Date(products[products.length - 1].end_datetime) - 1 * -ten_days);
+
+  const today = new Date().valueOf();
+  let dates = [];
+  for (let i=start_datetime;i <= end_datetime; i = new Date(i -(-one_day))){
+    dates.push(i);
+  }
+  return (<table>
+	  <thead>
+	  	<tr>
+		  <th>Product Name</th>
+		  <Dates dates={dates}/>
+	  	</tr>
+	  </thead>
+	    <tbody>
+		{products && products.map((elem, id) => {
+		  return (
+			<tr key={id}>
+				<td>{elem.product}</td>
+			  {dates.map((dateElem, dateID) => {
+				const start = new Date(elem.start_datetime);
+				const end = new Date(elem.end_datetime)
+				const rentalColor = dateElem.valueOf() > today ? 'future' : end <= today ? 'past' : 'current'
+				if(dateElem.valueOf() === start.valueOf()
+				|| (dateElem.valueOf() >= start.valueOf() && dateElem.valueOf() <= end.valueOf())){
+				  return (<td key={`${id}${dateID}`} className={`rented-cell rental-${rentalColor}`} title={dateElem}>{elem.id}</td>)
+				}
+				else{
+				  return (<td key={`${id} ${dateID}`} title={dateElem}>&nbsp;</td>)
+				}
+			  })}
+			</tr>
+		  )
+		})}
+	</tbody>
+  </table>);
+}
+function Visualization(props) {
+  const products = JSON.parse(document.getElementById('product-data').textContent);
+  // Display a "Like" <button>
+  return (<div>{products && <Timeline data={products}/>}</div>);
+}
+const domContainer = document.querySelector('#visualization-root-products');
+ReactDOM.render(<Visualization/>, domContainer);
+</script>
+
+{% endif %}
 </body>
 </html>
 

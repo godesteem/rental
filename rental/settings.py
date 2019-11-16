@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_fsm',
     'rest_framework',
     'django_filters',
+    'webpack_loader',
     # own apps
     'chore.apps.ChoreConfig',
     'shop.apps.ShopConfig',
@@ -147,6 +148,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'management/build/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'chore/static/management/webpack-stats.json'),
+    }
+}
 
 try:
     from rental.local_settings import *  # noqa

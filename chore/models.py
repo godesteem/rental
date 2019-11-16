@@ -41,3 +41,7 @@ class RentalPeriod(models.Model):
 
     def __str__(self):
         return f'{self.start_datetime} -> {self.end_datetime}'
+
+    @property
+    def duration(self):
+        return (self.end_datetime - self.start_datetime).days + 1 if self.end_datetime and self.start_datetime else None
