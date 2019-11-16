@@ -16,6 +16,7 @@ jobs:
       - name: start containers
         run: |
           docker-compose up -d
+          docker-compose run django ./manage.py migrate
       - name: run tests
         run: |
           docker-compose run django ./manage.py test -v 2

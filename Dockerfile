@@ -14,3 +14,5 @@ RUN pip3 install -U pip
 RUN pip3 install -r requirements.txt
 
 COPY . .
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/54d1f0bfeb6557adf8a3204455389d0901652242/wait-for-it.sh /opt/bin/
+RUN chmod +x /opt/bin/wait-for-it.sh
