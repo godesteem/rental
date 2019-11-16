@@ -1,0 +1,33 @@
+version: "2"
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_NAME=rental
+      - POSTGRES_USER=rental
+      - POSTGRES_PASSWORD=rental
+
+  django:
+    build:
+      context: ./.
+    image: rental
+    restart: always
+    volumes:
+      - .:/data/web
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: >
+      bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- python3 manage.py test -v 2
+    env_file:
+      - ./.env
+
+volumes:
+  web:
+  postgres:

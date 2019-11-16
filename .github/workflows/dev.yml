@@ -13,10 +13,6 @@ jobs:
       - name: build backend
         run: |
           docker build -t rental .
-      - name: start containers
-        run: |
-          docker-compose up -d
-          docker-compose run django bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- ./manage.py migrate
       - name: run tests
         run: |
-          docker-compose run django bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- ./manage.py test -v 2
+          docker-compose -f docker-compose.test.yml up -d
