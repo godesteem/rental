@@ -16,7 +16,7 @@ jobs:
       - name: start containers
         run: |
           docker-compose up -d
-          docker-compose run bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- django ./manage.py migrate
+          docker-compose run django bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- django ./manage.py migrate
       - name: run tests
         run: |
-          docker-compose run bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- django ./manage.py test -v 2
+          docker-compose run django bash /opt/bin/wait-for-it.sh 127.0.0.1:5432 -- django ./manage.py test -v 2
