@@ -19,7 +19,6 @@ def visualisation(request):
     view = request.GET.get('view')
     data = {}
     if view:
-        print('view', view)
         if re.match(r'.*(rental-periods).*', view):
             rental_periods = RentalPeriod.objects.all().order_by('start_datetime')
             rental_periods = [{

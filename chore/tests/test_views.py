@@ -13,12 +13,22 @@ class ViewsTestCase(APITestCase):
 
     @parameterized.expand([
         ('rental-period-visualization-get_data',),
-        ('visualization',),
         ('management',),
     ])
     def test_get_data(self, url):
         url = reverse(url)
 
         response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @parameterized.expand([
+        ({'view': 'orders,products,rental-periods'},),
+        ({},),
+    ])
+    def test_visualization(self, kwargs):
+        url = reverse('visualization')
+
+        response = self.client.get(url, data=kwargs)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
