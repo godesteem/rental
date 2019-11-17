@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django_fsm import TransitionNotAllowed
 
 from shop.models import Address, Order, OrderItem, Product
 
@@ -11,7 +12,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     def make_publish(self, request, queryset):
         for obj in queryset:
-            obj.publish()
+            try:
+                obj.publish()
+            except TransitionNotAllowed:
+                continue
             obj.save()
 
     make_publish.short_description = 'Publish selected products.'
