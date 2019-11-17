@@ -48,3 +48,8 @@ class ProductModelTestCase(TestCase):
         self.product.unpublish()
         self.product.save()
         self.assertEqual(self.product.status, Product.DRAFT)
+
+    def test_get_published(self):
+        self.product.publish()
+        self.product.save()
+        self.assertIn(self.product, Product.objects.get_published())

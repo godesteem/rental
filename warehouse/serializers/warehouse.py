@@ -62,14 +62,19 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
     @staticmethod
     def update_or_create_components(components, instance):
         if components:
+            current_components = []
             for warehouse_component in components:
+                component_id = warehouse_component['component']['id']
                 WarehouseItemComponent.objects.update_or_create(
                     item=instance,
-                    component_id=warehouse_component['component']['id'],
+                    component_id=component_id,
                     defaults={
                         'quantity': warehouse_component['quantity'],
                     }
                 )
+                current_components.append(component_id)
+
+            instance.warehouse_components.exclude(component_id__in=current_components).delete()
 
     @transaction.atomic
     def create(self, validated_data):

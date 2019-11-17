@@ -22,9 +22,9 @@ class AvailableProductsService:
 
     @staticmethod
     def __annotate_storage(products) -> QuerySet:
-        annotation = Sum(F('warehouse_items__components__storage_units__quantity')) / Sum(
-            F('warehouse_items__warehouse_components__quantity'))
-        return products.filter(warehouse_items__warehouse_components__isnull=False).annotate(
+        annotation = Sum(F('warehouse_item__components__storage_units__quantity')) / Sum(
+            F('warehouse_item__warehouse_components__quantity'))
+        return products.filter(warehouse_item__warehouse_components__isnull=False).annotate(
             quantity_in_stock=annotation
         )
 

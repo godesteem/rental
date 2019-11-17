@@ -8,6 +8,8 @@ import TableCell from "@material-ui/core/TableCell";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {Link} from "react-router-dom";
+import {TableBody} from "@material-ui/core";
 
 
 const useStyles = makeStyles(theme => ({
@@ -63,15 +65,19 @@ export default function ProductsList(props) {
             <TableRow>
               <TableCell><b className={classes.whiteText}>ID</b></TableCell>
               <TableCell><b className={classes.whiteText}>Name</b></TableCell>
+              <TableCell><b className={classes.whiteText}>Status</b></TableCell>
             </TableRow>
           </TableHead>
+          <TableBody>
       {products.map((product, id) => {
         return(<TableRow key={id} className={id % 2 ? classes.darkRow : classes.lightRow}>
-            <TableCell>{product.id}</TableCell>
+            <TableCell><Link to={`/management/products/${product.id}/detail`}>{product.id}</Link></TableCell>
             <TableCell>{product.name}</TableCell>
+            <TableCell>{product.status}</TableCell>
           </TableRow>
         )
       })}
+          </TableBody>
         </Table>
       </Paper>
     </div>

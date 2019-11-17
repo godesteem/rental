@@ -2,9 +2,9 @@ from django.db import models
 
 
 class WarehouseItem(models.Model):
-    product = models.ForeignKey(
+    product = models.OneToOneField(
         to='shop.Product', on_delete=models.PROTECT,
-        related_name='warehouse_items'
+        related_name='warehouse_item'
     )
     components = models.ManyToManyField(
         to='warehouse.WarehouseComponent',

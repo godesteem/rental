@@ -12,6 +12,8 @@ import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import ProductsList from "./components/ProductsList";
 import ProductAdd from "./components/ProductAdd";
 import theme from './lib/theme';
+import ProductDetail from "./components/ProductDetail";
+import ProductDetailPage from "./components/ProductDetailPage";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,6 +48,8 @@ function App() {
             <Switch>
               <Route exact path="/management/products" component={ProductsList}/>
               <Route exact path="/management/products/add" component={ProductAdd}/>
+              <Route exact path="/management/products/:id/edit" component={ProductAdd}/>
+              <Route exact path="/management/products/:id/detail" component={ProductDetailPage}/>
             </Switch>
         </Container>
       </Router>

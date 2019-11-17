@@ -131,3 +131,11 @@ class ProductFilterTestCase(APITestCase):
         self.assertEqual(self.product.id in [i['id'] for i in response.data], expects_product, response.data)
         if expects_product:
             self.assertEqual(response.data[0]['available_quantity'], expected_count)
+
+    def test_publish(self):
+        self.product.unpublish()
+        self.product.save()
+
+        response = self.client.post(reverse('products-publish', kwargs={'pk': self.product.id}))
+
+        self.assertTrue(is_success(response.status_code), response.data)
