@@ -59,3 +59,10 @@ class RentalPeriodQuerySetTestCase(TestCase, ModelStrTestCaseMixin):
                 f'{self.dates[index][0]}, {self.dates[index][1]} '
                 f'not in {start_datetime}, {end_datetime}'
             )
+
+    def test_duration(self):
+        rental_period = RentalPeriodFactory(
+            start_datetime=datetime.datetime(2019, 1, 2, 0, 0, 0),
+            end_datetime=datetime.datetime(2019, 1, 4, 0, 0, 0)
+        )
+        self.assertEqual(rental_period.duration, 3)
