@@ -17,11 +17,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
 
 from shop.urls import urlpatterns as shop_patterns
 from warehouse.urls import urlpatterns as warehouse_patterns
 
-api_patterns = shop_patterns + warehouse_patterns
+auth_patterns = [
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
+
+api_patterns = auth_patterns + shop_patterns + warehouse_patterns
 
 
 urlpatterns = [

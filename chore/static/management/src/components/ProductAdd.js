@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import API from '../lib/api';
+import rentalAPI from '../lib/api';
+import {getCookie} from "../lib/cookies";
 import myTheme from '../lib/theme';
 import Paper from "@material-ui/core/Paper";
 import FormGroup from '@material-ui/core/FormGroup';
@@ -105,16 +106,7 @@ const useStyles = makeStyles(theme => ({
     padding: '0 0.5rem',
   }
 }));
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+const API = new rentalAPI({token: getCookie("JWT")});
 export default function ProductAdd(props) {
   const classes = useStyles(myTheme);
   const isEdit = !!props.match.params.id;
@@ -130,7 +122,7 @@ export default function ProductAdd(props) {
   useEffect(() => {
     async function getComponents(){
       if(currentStep === 1){
-        const result = await API.get('warehouse-components/');
+        const result = await API.getWarehouseComponents();
         if(result){
           setAllComponents(result.data);
         }
@@ -141,7 +133,7 @@ export default function ProductAdd(props) {
   useEffect( () => {
     async function getData(){
       if(isEdit) {
-        const result = await API.get(`products/${productId}/`);
+        const result = await API.getProduct(productId);
         if (result) {
           setProduct(result.data);
           let newComponents = []
@@ -172,42 +164,20 @@ export default function ProductAdd(props) {
     });
     setComponents(newComponents);
   }
-  async function submitStep(targetStep){
-    async function postProduct(){
-      if(isEdit){
-        return await API.put(`products/${productId}/`, {name, price, currency}).catch((e) => console.log(e))
-      }
-      else {
-        return await API.post(`products/`, {name, price, currency}).catch((e) => console.log(e))
-      }
+  async function submitStep(targetStep, skip){
+    if(skip) {
+      setStep(targetStep);
+      return;
     }
-    async function postComponents(){
-      if(isEdit) {
-        return await API.patch(`warehouse-items/${productId}/`, {
-          warehouse_components_list: components.map(elem => ({
-            component_id: elem.component_id,
-            quantity: elem.quantity
-          }))
-        }).catch((e) => console.log(e))
-      }
-      else{
-        return await API.post('warehouse-items/', {
-          product_id: productId,
-          warehouse_components_list: components.map(elem => ({
-            component_id: elem.component_id,
-            quantity: elem.quantity
-          }))
-        }).catch((e) => console.log(e))
-      }
-    }
+
     if(currentStep === 0) {
-      const response = await postProduct();
+      const response = await API.postProduct(isEdit, productId, {name, price, currency});
       if(!!response){
         setProduct(response.data)
       }
     }
-    else if(currentStep === 1){
-      const response = await postComponents();
+    else if(currentStep === 1 && !isEdit){
+      const response = await API.postComponents(isEdit, productId, components);
       if(!!response){
         setFinishedProduct(response.data);
       }
@@ -263,7 +233,7 @@ export default function ProductAdd(props) {
             </div>
             <FormControl variant="filled" className={classes.formControl} style={{display: 'inline-block'}}>
               <Button
-                onClick={() => submitStep(0)}
+                onClick={() => submitStep(0, false)}
                 fullWidth={!isEdit}
                 type="submit"
                 variant="contained"
@@ -273,7 +243,7 @@ export default function ProductAdd(props) {
                 Update
               </Button>
               <Button
-                onClick={() => submitStep(1)}
+                onClick={() => submitStep(1, isEdit)}
                 fullWidth={!isEdit}
                 style={{width: isEdit ? '50%' : '100%'}}
                 size={isEdit ? 'medium' : 'large'}
@@ -281,7 +251,7 @@ export default function ProductAdd(props) {
                 variant="contained"
                 color="primary"
                 className={classes.submitButton}>
-                Next
+                {isEdit ? 'Next' : 'Save'}
               </Button>
             </FormControl>
           </TabPanel>
@@ -292,7 +262,7 @@ export default function ProductAdd(props) {
               <Select
                 labelId={`select-components-label-${groupId}`}
                 id={`select-components-${groupId}`}
-                value={elem.component_id}
+                value={!!allComponents ? elem.component_id : ''}
                 InputLabelProps={isEdit ? {
                   shrink: isEdit,
                 } : {}}
@@ -317,7 +287,7 @@ export default function ProductAdd(props) {
 
           <FormControl variant="filled" className={classes.formControl} style={{display: 'inline-block'}}>
             <Button
-              onClick={() => submitStep(1)}
+              onClick={() => submitStep(1, false)}
               fullWidth={!isEdit}
               type="submit"
               variant="contained"
@@ -327,7 +297,7 @@ export default function ProductAdd(props) {
               Update
             </Button>
             <Button
-              onClick={() => submitStep(2)}
+              onClick={() => submitStep(2, isEdit)}
               fullWidth={!isEdit}
               style={{width: isEdit ? '50%' : '100%'}}
               size={isEdit ? 'medium' : 'large'}
@@ -335,7 +305,7 @@ export default function ProductAdd(props) {
               variant="contained"
               color="primary"
               className={classes.submitButton}>
-              Next
+                {isEdit ? 'Next' : 'Save'}
             </Button>
           </FormControl>
 

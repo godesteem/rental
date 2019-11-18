@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
-import API from "../lib/api";
+import rentalAPI from "../lib/api";
+import {getCookie} from "../lib/cookies";
 import ProductDetail from "./ProductDetail";
 import Paper from "@material-ui/core/Paper";
 import myTheme from "../lib/theme";
@@ -61,13 +62,14 @@ const useStyles = makeStyles(theme => ({
     padding: '0 0.5rem',
   }
 }));
+const API = new rentalAPI({token: getCookie("JWT")});
 export default function ProductDetailPage(props) {
   const classes = useStyles(myTheme);
   const [productId, setProductId] = useState(props.match.params.id || undefined)
   const [product, setProduct] = useState(props.data || undefined)
   useEffect( () => {
     async function getData(){
-      const result = await API.get(`products/${productId}`);
+      const result = await API.getProduct(productId);
       if(result)
         setProduct({
           product: result.data,

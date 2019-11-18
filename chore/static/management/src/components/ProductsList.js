@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import API from '../lib/api';
+import rentalAPI from '../lib/api';
+import {getCookie} from "../lib/cookies";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -42,12 +43,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const API = new rentalAPI({token: getCookie("JWT")});
+
 export default function ProductsList(props) {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
   useEffect( () => {
     async function getData(){
-      const result = await API.get('products/');
+      const result = await API.getProducts();
       if(result)
         setProducts(result.data);
     }
