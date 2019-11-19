@@ -1,5 +1,19 @@
 on: [push]
 jobs:
+  pre-check:
+    name: Pre ceck
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
+      - name: Install Requirements
+        run: |
+          pip3 install -r dev-requirements.txt
+      - name: Run linter
+        run: |
+          flake8 .
   test-backend:
     name: Test backend
     runs-on: ubuntu-18.04
