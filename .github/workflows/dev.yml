@@ -27,7 +27,20 @@ jobs:
           echo -e "SECRET_KEY=xxx\nDB_NAME=rental\nDB_USER=rental\nDB_PASS=rental" >> .env
       - name: build backend
         run: |
-          docker build -t rental .
+          docker build -t docker.pkg.github.com/godesteem/rental/backend:${TAG} .
       - name: run tests
         run: |
           docker-compose -f docker-compose.test.yml up -d
+
+  push-container:
+    name: Push Container
+    runs-on: ubuntu-18.04
+    env:
+      TAG: 0.1.${{ github.sha }}
+    needs: test-backend
+    steps:
+      - uses: actions/checkout@v1
+      - name: push
+        run: |
+          docker login docker.pkg.github.com --username philsupertramp
+          docker push docker.pkg.github.com/godesteem/rental/backend:${TAG}
