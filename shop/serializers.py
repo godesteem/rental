@@ -18,12 +18,23 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'currency', 'available_quantity', 'status', 'components']
+        fields = [
+            'id',
+            'name',
+            'price',
+            'currency',
+            'available_quantity',
+            'status',
+            'components',
+        ]
 
     def get_components(self, obj):
-        from warehouse.serializers.warehouse import WarehouseItemComponentSerializer
+        from warehouse.serializers.warehouse import \
+            WarehouseItemComponentSerializer
         try:
-            return WarehouseItemComponentSerializer(obj.warehouse_item.warehouse_components.all(), many=True).data
+            return WarehouseItemComponentSerializer(
+                obj.warehouse_item.warehouse_components.all(), many=True
+            ).data
         except WarehouseItem.DoesNotExist:
             return None
 

@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
@@ -12,7 +10,9 @@ from shop.factories.order import OrderItemFactory, OrderFactory
 from shop.factories.product import PublishedProductFactory
 from shop.models import EUR
 from warehouse.factories.storage import StorageUnitComponentFactory
-from warehouse.factories.warehouse import WarehouseItemFactory, WarehouseItemComponentFactory
+from warehouse.factories.warehouse import (
+    WarehouseItemFactory, WarehouseItemComponentFactory
+)
 
 
 class ProductViewSetTestCase(APITestCase):
@@ -76,7 +76,8 @@ class ProductViewSetTestCase(APITestCase):
         self.assertEqual(response['currency'], self.product.currency)
 
     def test_filter_date_range_working(self):
-        kwargs = {'date_range_start': '2019-11-01', 'date_range_end': '2019-11-05'}
+        kwargs = {'date_range_start': '2019-11-01',
+                  'date_range_end': '2019-11-05'}
 
         response = self.client.get(self.list_url, data=kwargs)
 
@@ -93,16 +94,22 @@ class ProductFilterTestCase(APITestCase):
         )
         cls.product = PublishedProductFactory()
         # 2019-11-01 –> 2019-11-02
-        rental_period = RentalPeriodFactory(start_datetime=timezone.datetime(2019, 11, 1, 0, 0, 0),
-                                            end_datetime=timezone.datetime(2019, 11, 2, 0, 0, 0))
+        rental_period = RentalPeriodFactory(
+            start_datetime=timezone.datetime(2019, 11, 1, 0, 0, 0),
+            end_datetime=timezone.datetime(2019, 11, 2, 0, 0, 0)
+        )
 
         # 2019-01-01 –> 2019-01-05
-        rental_period2 = RentalPeriodFactory(start_datetime=timezone.datetime(2019, 1, 1, 0, 0, 0),
-                                             end_datetime=timezone.datetime(2019, 1, 5, 0, 0, 0))
-        
+        rental_period2 = RentalPeriodFactory(
+            start_datetime=timezone.datetime(2019, 1, 1, 0, 0, 0),
+            end_datetime=timezone.datetime(2019, 1, 5, 0, 0, 0)
+        )
+
         # 2019-01-04 –> 2019-02-01
-        rental_period3 = RentalPeriodFactory(start_datetime=timezone.datetime(2019, 1, 4, 0, 0, 0),
-                                             end_datetime=timezone.datetime(2019, 2, 1, 0, 0, 0))
+        rental_period3 = RentalPeriodFactory(
+            start_datetime=timezone.datetime(2019, 1, 4, 0, 0, 0),
+            end_datetime=timezone.datetime(2019, 2, 1, 0, 0, 0)
+        )
         order = OrderFactory(rental_period=rental_period)
         order2 = OrderFactory(rental_period=rental_period2)
         order3 = OrderFactory(rental_period=rental_period3)
@@ -119,23 +126,34 @@ class ProductFilterTestCase(APITestCase):
         self.client.force_login(self.user)
 
     @parameterized.expand([
-        ({'date_range_start': '2019-11-01', 'date_range_end': '2019-11-05'}, False, 0),
-        ({'date_range_start': '2019-10-01', 'date_range_end': '2019-10-05'}, True, 2),
-        ({'date_range_start': '2019-01-01', 'date_range_end': '2019-01-05'}, False, 0),
-        ({'date_range_start': '2019-01-24', 'date_range_end': '2019-01-30'}, True, 1),
+        ({'date_range_start': '2019-11-01',
+          'date_range_end': '2019-11-05'}, False, 0),
+        ({'date_range_start': '2019-10-01',
+          'date_range_end': '2019-10-05'}, True, 2),
+        ({'date_range_start': '2019-01-01',
+          'date_range_end': '2019-01-05'}, False, 0),
+        ({'date_range_start': '2019-01-24',
+          'date_range_end': '2019-01-30'}, True, 1),
     ])
     def test_filter_date_range(self, payload, expects_product, expected_count):
         response = self.client.get(self.list_url, data=payload)
 
         self.assertTrue(is_success(response.status_code))
-        self.assertEqual(self.product.id in [i['id'] for i in response.data], expects_product, response.data)
+        self.assertEqual(
+            self.product.id in [i['id']
+                                for i in response.data],
+            expects_product, response.data)
         if expects_product:
-            self.assertEqual(response.data[0]['available_quantity'], expected_count)
+            self.assertEqual(
+                response.data[0]['available_quantity'],
+                expected_count)
 
     def test_publish(self):
         self.product.unpublish()
         self.product.save()
 
-        response = self.client.post(reverse('products-publish', kwargs={'pk': self.product.id}))
+        response = self.client.post(
+            reverse('products-publish', kwargs={'pk': self.product.id})
+        )
 
         self.assertTrue(is_success(response.status_code), response.data)

@@ -6,7 +6,6 @@ from parameterized import parameterized
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
 
-from chore.factories import RentalPeriodFactory
 from shop.factories.order import OrderFactory, OrderItemFactory, UserFactory
 from shop.factories.product import PublishedProductFactory
 from shop.models import EUR

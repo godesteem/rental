@@ -77,7 +77,9 @@ class WarehouseItemSerializer(serializers.ModelSerializer):
                 )
                 current_components.append(component_id)
 
-            instance.warehouse_components.exclude(component_id__in=current_components).delete()
+            instance.warehouse_components.exclude(
+                component_id__in=current_components
+            ).delete()
 
     @transaction.atomic
     def create(self, validated_data):

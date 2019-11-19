@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django_filters import rest_framework, DateFromToRangeFilter
 from django_filters.widgets import RangeWidget
 from rest_framework import mixins, viewsets
@@ -25,7 +24,10 @@ class StartEndRangeWidget(RangeWidget):
 
 
 class ProductFilter(rest_framework.FilterSet):
-    date_range = DateFromToRangeFilter(widget=StartEndRangeWidget(attrs={'placeholder': 'DD-MM-YYYY'}), method='filter_date_range')
+    date_range = DateFromToRangeFilter(
+        widget=StartEndRangeWidget(attrs={'placeholder': 'DD-MM-YYYY'}),
+        method='filter_date_range'
+    )
     ids = rest_framework.BaseInFilter(field_name='id')
     status_in = rest_framework.BaseInFilter(field_name='status')
 

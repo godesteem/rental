@@ -112,7 +112,10 @@ class WarehouseComponentViewSetTestCase(APITestCase):
         )
         cls.component = warehouse_item_component.component
         cls.list_url = reverse('warehouse-components-list')
-        cls.detail_url = reverse('warehouse-components-detail', kwargs={'pk': cls.component.id})
+        cls.detail_url = reverse(
+            'warehouse-components-detail',
+            kwargs={'pk': cls.component.id}
+        )
 
     def setUp(self) -> None:
         self.client.force_login(self.user)

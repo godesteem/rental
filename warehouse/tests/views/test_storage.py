@@ -5,7 +5,9 @@ from django.urls import reverse
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
 
-from warehouse.factories.storage import StorageUnitFactory, StorageUnitComponentFactory
+from warehouse.factories.storage import (
+    StorageUnitFactory, StorageUnitComponentFactory
+)
 from warehouse.factories.warehouse import WarehouseComponentFactory
 
 

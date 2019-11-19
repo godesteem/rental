@@ -1,8 +1,9 @@
 from django.test import TestCase
-from parameterized import parameterized
 from rest_framework.exceptions import ValidationError
 
-from warehouse.factories.storage import StorageUnitFactory, StorageUnitComponentFactory
+from warehouse.factories.storage import (
+    StorageUnitFactory, StorageUnitComponentFactory
+)
 from warehouse.factories.warehouse import WarehouseComponentFactory
 from warehouse.models.storage import StorageUnit
 from warehouse.serializers.fields import StorageUnitField

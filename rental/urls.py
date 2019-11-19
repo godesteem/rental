@@ -17,7 +17,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView, TokenVerifyView, TokenRefreshView
+)
 
 from shop.urls import urlpatterns as shop_patterns
 from warehouse.urls import urlpatterns as warehouse_patterns
@@ -37,4 +39,5 @@ urlpatterns = [
     path('management/', include('chore.urls')),
 ]
 if settings.DEBUG:  # noqa
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)

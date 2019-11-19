@@ -1,7 +1,9 @@
 from rest_framework import viewsets, mixins
 
 from warehouse.models.warehouse import WarehouseItem, WarehouseComponent
-from warehouse.serializers.warehouse import WarehouseItemSerializer, WarehouseComponentSerializer
+from warehouse.serializers.warehouse import (
+    WarehouseItemSerializer, WarehouseComponentSerializer
+)
 
 
 class WarehouseItemViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
@@ -23,8 +25,10 @@ class WarehouseItemViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
         return obj
 
 
-class WarehouseComponentViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
-                                mixins.UpdateModelMixin, mixins.CreateModelMixin,
+class WarehouseComponentViewSet(viewsets.GenericViewSet,
+                                mixins.ListModelMixin,
+                                mixins.UpdateModelMixin,
+                                mixins.CreateModelMixin,
                                 mixins.RetrieveModelMixin):
     queryset = WarehouseComponent.objects.all()
     serializer_class = WarehouseComponentSerializer
