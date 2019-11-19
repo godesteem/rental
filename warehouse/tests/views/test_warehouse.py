@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.status import is_success
 from rest_framework.test import APITestCase
@@ -14,6 +15,10 @@ from warehouse.factories.warehouse import (
 class WarehouseItemTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_superuser(
+            username='admin', email='admin@example.com',
+            password='123', is_active=True
+        )
         cls.product = ProductFactory()
         cls.item = WarehouseItemFactory(product=cls.product)
         warehouse_item_component = WarehouseItemComponentFactory(
@@ -23,6 +28,9 @@ class WarehouseItemTestCase(APITestCase):
         cls.detail_url = reverse('warehouse-items-detail',
                                  kwargs={'pk': cls.product.pk})
         cls.list_url = reverse('warehouse-items-list')
+
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
 
     def _test_compare_objects(self, data, item, product):
         self.assertEqual(data['id'], item.id, data)
@@ -69,7 +77,7 @@ class WarehouseItemTestCase(APITestCase):
 
     def test_update(self):
         product = ProductFactory()
-        item = WarehouseItemFactory(product=product)
+        WarehouseItemFactory(product=product)
         detail_url = reverse('warehouse-items-detail',
                              kwargs={'pk': product.pk})
         data = {
@@ -88,3 +96,48 @@ class WarehouseItemTestCase(APITestCase):
 
         self.assertEqual(data['warehouse_components'][0]['quantity'], 3, data)
         self.assertEqual(data['product']['id'], product.id, data)
+
+
+class WarehouseComponentViewSetTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_superuser(
+            username='admin', email='admin@example.com',
+            password='123', is_active=True
+        )
+        cls.product = ProductFactory()
+        cls.item = WarehouseItemFactory(product=cls.product)
+        warehouse_item_component = WarehouseItemComponentFactory(
+            item=cls.item, quantity=2
+        )
+        cls.component = warehouse_item_component.component
+        cls.list_url = reverse('warehouse-components-list')
+        cls.detail_url = reverse('warehouse-components-detail', kwargs={'pk': cls.component.id})
+
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
+
+    def test_list(self):
+        response = self.client.get(self.list_url)
+        data = response.data
+
+        self.assertTrue(is_success(response.status_code), data)
+        self.assertGreaterEqual(len(data), 1, data)
+
+    def test_retrieve(self):
+        response = self.client.get(self.detail_url)
+        data = response.data
+
+        self.assertTrue(is_success(response.status_code), data)
+        self.assertEqual(data['id'], self.component.id)
+        self.assertEqual(data['name'], self.component.name)
+
+    def test_create(self):
+        data = {
+            'name': 'TEST Component'
+        }
+
+        response = self.client.post(self.list_url, data)
+        response_data = response.data
+
+        self.assertTrue(is_success(response.status_code), response_data)
