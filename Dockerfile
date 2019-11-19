@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-RUN apk update && apk add build-base jpeg-dev zlib-dev bash && \
+RUN apk update && apk add build-base jpeg-dev zlib-dev bash coreutils && \
     apk add --virtual .build-deps postgresql-dev zlib-dev libffi-dev \
         linux-headers pkgconfig fontconfig-dev
 
@@ -14,5 +14,5 @@ RUN pip3 install -U pip
 RUN pip3 install -r requirements.txt
 
 COPY . .
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/54d1f0bfeb6557adf8a3204455389d0901652242/wait-for-it.sh /opt/bin/
+ADD https://raw.githubusercontent.com/iturgeon/wait-for-it/59bcd4b53e2ccd5197a75a55d6fbc847f646d382/wait-for-it.sh /opt/bin/
 RUN chmod +x /opt/bin/wait-for-it.sh

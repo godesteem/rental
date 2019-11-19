@@ -101,6 +101,9 @@ const theme = {
       ...rawTheme.typography.body1,
       fontSize: 14,
     },
+    button: {
+      ...rawTheme
+    }
   },
 };
 

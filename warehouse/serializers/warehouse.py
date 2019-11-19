@@ -7,12 +7,15 @@ from shop.serializers import ProductSerializer
 from warehouse.models.warehouse import (
     WarehouseItem, WarehouseItemComponent, WarehouseComponent
 )
+from warehouse.serializers.storage import StorageUnitComponentSerializer
 
 
 class WarehouseComponentSerializer(serializers.ModelSerializer):
+    storage_units = StorageUnitComponentSerializer(many=True, read_only=True)
+
     class Meta:
         model = WarehouseComponent
-        fields = '__all__'
+        fields = ['id', 'storage_units', 'name']
 
 
 class WarehouseItemComponentSerializer(serializers.ModelSerializer):

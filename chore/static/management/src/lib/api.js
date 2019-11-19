@@ -21,7 +21,7 @@ export default class rentalAPI {
     this.config = {headers: {'Authorization': `JWT ${this.token}`}};
   };
 
-  async postComponents(isEdit, productId, components) {
+  async postNestedComponents(isEdit, productId, components) {
     if (isEdit) {
       return await api.patch(`warehouse-items/${productId}/`, {
         warehouse_components_list: components.map(elem => ({
@@ -36,6 +36,20 @@ export default class rentalAPI {
           component_id: elem.component_id,
           quantity: elem.quantity
         }))
+      }, this.config).catch((e) => console.log(e))
+    }
+  }
+  async postComponent(isEdit, componentId, {name, storageUnits}){
+    if(isEdit){
+      return await api.put(`warehouse-components/${componentId}/`, {
+        name,
+        storage_units: storageUnits
+      }, this.config).catch((e) => console.log(e));
+    }
+    else{
+      return await api.post(`warehouse-components/`, {
+        name,
+        storage_units: storageUnits
       }, this.config).catch((e) => console.log(e))
     }
   }
@@ -58,6 +72,12 @@ export default class rentalAPI {
 
   async getWarehouseComponents() {
     return await api.get('warehouse-components/', this.config);
+  }
+  async getWarehouseComponent(componentId) {
+    return await api.get(`warehouse-components/${componentId}/`, this.config);
+  }
+  async getStorageUnits(){
+    return await api.get('storage-units/', this.config);
   }
 
   getOrders = async () => {

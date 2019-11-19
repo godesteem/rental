@@ -1,8 +1,21 @@
-htmlcov
-*-graph*
 
-.flake8
-Dockerfile
-docker-compose.yml
-dev-requirements.txt
-node_modules
+.idea/
+__pycache__/
+
+local_settings.py
+.env
+.coverage
+htmlcov
+*/node_modules/
+
+# db
+*.sqlite3
+mydatabase
+
+
+# test data
+test*.csv
+test.png
+
+# visualization by graphviz
+*-graph*

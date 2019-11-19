@@ -1,5 +1,4 @@
 from rest_framework import viewsets, mixins
-from rest_framework.generics import get_object_or_404
 
 from warehouse.models.warehouse import WarehouseItem, WarehouseComponent
 from warehouse.serializers.warehouse import WarehouseItemSerializer, WarehouseComponentSerializer

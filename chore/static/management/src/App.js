@@ -23,6 +23,9 @@ import Paper from "@material-ui/core/Paper";
 import Input from "@material-ui/core/Input";
 import rentalAPI from "./lib/api";
 import {deleteCookie, setCookie, getCookie} from "./lib/cookies";
+import ComponentsList from "./components/ComponentsList";
+import ComponentAdd from "./components/ComponentAdd";
+import ComponentDetailPage from "./components/ComponentDetailPage";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -116,6 +119,10 @@ function App() {
               <Route exact path="/management/products/add" component={ProductAdd}/>
               <Route exact path="/management/products/:id/edit" component={ProductAdd}/>
               <Route exact path="/management/products/:id/detail" component={ProductDetailPage}/>
+              <Route exact path="/management/components" component={ComponentsList}/>
+              <Route exact path="/management/components/add" component={ComponentAdd}/>
+              <Route exact path="/management/components/:id/detail" component={ComponentDetailPage}/>
+              <Route exact path="/management/components/:id/edit" component={ComponentAdd}/>
             </Switch>
         </Container>}
       </Router>
