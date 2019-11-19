@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       TAG: 0.1.${{ github.sha }}
+    needs: pre-check
     steps:
       - uses: actions/checkout@v1
       - name: set env
