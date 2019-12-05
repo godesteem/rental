@@ -1,5 +1,5 @@
 factory_boy==2.12.0
-Django==2.2.6
+Django==2.2.8
 django-cors_headers==3.2.0
 django-filter==2.2.0
 django-fsm==2.6.1
