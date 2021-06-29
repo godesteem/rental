@@ -1,5 +1,5 @@
 # Rental
-is a production ready project for an e-commerce shop; including a rental system
+is a **NOT YET** production ready project for an e-commerce shop; including a rental system
 
 
 
